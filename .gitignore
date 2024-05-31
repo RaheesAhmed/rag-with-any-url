@@ -1,0 +1,5 @@
+/node_modules
+.env
+sales_agent.js
+property_agent.js
+app.js
