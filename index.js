@@ -29,8 +29,17 @@ app.get("/chat", (req, res) => {
 app.post("/chat", async (req, res) => {
   const { query, url, model, temperature, maxTokens, chunkSize, chunkOverlap } =
     req.body;
-  const openAIKey = req.headers["openai-api-key"];
-  console.log("Request Recieved", openAIKey, url, query);
+  const authHeader = req.headers["authorization"];
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    res.status(400).send({
+      error:
+        "Authorization header missing or incorrect. It should be 'Bearer <openai-api-key>'.",
+    });
+    return;
+  }
+  const openAIKey = authHeader.split(" ")[1]; // Extract the token from the header
+  console.log("Request Received", openAIKey, url, query);
+
   if (!query || !url) {
     res.status(400).send({
       error: "Please provide both a query and a URL.",
